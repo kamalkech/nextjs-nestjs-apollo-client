@@ -1,10 +1,15 @@
 import Link from "next/link";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
-import { fetchBlogs } from "../redux/blog/actions";
+import { fetchBlogs } from "../../redux/blog/actions";
 
+interface IProps {
+  blogs: [];
+  blog: null,
+  loading: boolean;
+}
 
-const IndexPage = (props: any) => {
+const BlogsPage = (props: IProps) => {
   return (
     <>
       <div className="container fluid mt-2 mb-4">
@@ -25,11 +30,11 @@ const IndexPage = (props: any) => {
                       {blog.title}
                     </h5>
                     <p>{blog._id}</p>
-                    {/* <Link href="/blogs/[id]" as={`/blogs/${m.id}`}>
+                    <Link href="/blogs/[id]" as={`/blogs/${blog._id}`}>
                       <a>
                         <button className="btn btn-dark">Details</button>
                       </a>
-                    </Link> */}
+                    </Link>
                   </div>
                 </div>
               </div>
@@ -48,10 +53,11 @@ const mapDispatchToProps = (dispatch: any) => {
 
 const mapStateToProps = (state: any) => ({
   blogs: state.blog.blogs,
+  blog: null,
   loading: state.blog.loading,
 });
 
-IndexPage.getInitialProps = async (props: any) => {
+BlogsPage.getInitialProps = async (props: any) => {
   const state = props.store.getState();
   if (state.blog.blogs.length === 0) {
     await props.store.dispatch(await fetchBlogs());
@@ -59,4 +65,4 @@ IndexPage.getInitialProps = async (props: any) => {
   return {};
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(IndexPage);
+export default connect(mapStateToProps, mapDispatchToProps)(BlogsPage);

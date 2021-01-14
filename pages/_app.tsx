@@ -1,5 +1,8 @@
-import type { AppProps } from 'next/app';
+import App, { AppProps, AppContext } from 'next/app';
 import 'bootstrap/dist/css/bootstrap.min.css';
+
+// Redux.
+import wrapper from "../redux/store";
 
 function MyApp({ Component, pageProps }: AppProps) {
   return (
@@ -7,4 +10,11 @@ function MyApp({ Component, pageProps }: AppProps) {
   );
 }
 
-export default MyApp
+
+// Create Initial Props.
+MyApp.getInitialProps = async (appContext: AppContext) => {
+  const appProps: any = await App.getInitialProps(appContext);
+  return { ...appProps };
+};
+
+export default wrapper.withRedux(MyApp);
