@@ -11,7 +11,9 @@ import { addBlog, deleteAllBlogs, deleteBlog, fetchBlogs, fetchCategoriesBlogs }
 // Bootstrap.
 import Form from 'react-bootstrap/Form';
 import Row from 'react-bootstrap/Row';
+import Col from 'react-bootstrap/Col';
 import Button from 'react-bootstrap/Button';
+import Modal from 'react-bootstrap/Modal';
 import { useEffect, useState } from "react";
 
 interface IProps {
@@ -39,10 +41,36 @@ const BlogsPage = (props: any) => {
     await props.addBlog(data);
   };
 
+  const [show, setShow] = useState(false);
+  const [blog, setBlog] = useState(null);
+  const handleClose = () => setShow(false);
+  const handleShow = () => setShow(true);
+
+  const showDetailsBlog = (show, blog) => {
+    return (
+      <>
+        <Modal show={show} onHide={handleClose}>
+          <Modal.Header closeButton>
+            <Modal.Title>{ blog.title }</Modal.Title>
+          </Modal.Header>
+          <Modal.Body>{ blog.content }</Modal.Body>
+          <Modal.Footer>
+            { blog.category.title }
+            <Link href="/blogs/[id]" as={`/blogs/${blog._id}`}>
+              <a>
+                <Button variant="info" block>Details</Button>
+              </a>
+            </Link>
+          </Modal.Footer>
+        </Modal>
+      </>
+    )
+  }
+
   return (
     <>
-      <div className="container fluid mt-2 mb-4">
-        <div className="row">
+      <div className="container fluid">
+        <Row>
           <div className="col-md-12 text-center">
             <h1>Nextjs + Nestjs + Graphql + Redux + Mongodb</h1>
             <h2>List Blogs</h2>
@@ -53,40 +81,40 @@ const BlogsPage = (props: any) => {
           }}>
               refresh
             </Button>
-        </div>
-        <div className="row">
+        </Row>
+        <hr/>
+        <Row>
           <div className="col-md-12">
-          <Form  onSubmit={handleSubmit(onSubmit)}>
-            <Form.Group controlId="category">
-              <Form.Label>Category</Form.Label>
-              <Form.Control as="select" custom name="category" ref={register}>
-                {props.categoriesBlogs &&
-                  props.categoriesBlogs.map((cb: any, idx: number) => (
-                    <option key={idx} value={cb._id}>{cb.title}</option>
-                ))}
-              </Form.Control>
-            </Form.Group>
-            <Form.Group controlId="title">
-              <Form.Label>Title</Form.Label>
-              <Form.Control type="text" name="title" placeholder="Enter title" ref={register} defaultValue="test title blog" />
-            </Form.Group>
-            <Form.Group controlId="content">
-              <Form.Label>Content</Form.Label>
-              <Form.Control type="text" name="content" placeholder="Enter content" ref={register} defaultValue="test content blog" />
-            </Form.Group>
-            <Form.Group controlId="tags">
-              <Form.Label>Tags</Form.Label>
-              <Form.Control type="text" name="tags" placeholder="Enter tags" ref={register} defaultValue="sport,fifa" />
-            </Form.Group>
-            <Button variant="primary" type="submit">
-              Add
-            </Button>
-          </Form>
+            <Form  onSubmit={handleSubmit(onSubmit)}>
+              <Form.Group controlId="category">
+                <Form.Label>Category</Form.Label>
+                <Form.Control as="select" custom name="category" ref={register}>
+                  {props.categoriesBlogs &&
+                    props.categoriesBlogs.map((cb: any, idx: number) => (
+                      <option key={idx} value={cb._id}>{cb.title}</option>
+                  ))}
+                </Form.Control>
+              </Form.Group>
+              <Form.Group controlId="title">
+                <Form.Label>Title</Form.Label>
+                <Form.Control type="text" name="title" placeholder="Enter title" ref={register} defaultValue="test title blog" />
+              </Form.Group>
+              <Form.Group controlId="content">
+                <Form.Label>Content</Form.Label>
+                <Form.Control type="text" name="content" placeholder="Enter content" ref={register} defaultValue="test content blog" />
+              </Form.Group>
+              <Form.Group controlId="tags">
+                <Form.Label>Tags</Form.Label>
+                <Form.Control type="text" name="tags" placeholder="Enter tags" ref={register} defaultValue="sport,fifa" />
+              </Form.Group>
+              <Button variant="primary" type="submit">
+                Add
+              </Button>
+            </Form>
           </div>
-        </div>
-      </div>
-      <div className="container fluid">
-        <div className="row">
+        </Row>
+        <hr/>
+        <Row>
           {props.blogs &&
             props.blogs.map((blog: any, idx: number) => (
               <div key={idx} className="col-md-3 mb-4">
@@ -96,6 +124,11 @@ const BlogsPage = (props: any) => {
                       {blog.title}
                     </h5>
                     <p>{blog._id}</p>
+                    <Button variant="warning" block onClick={(e) => {
+                      handleShow();
+                      setBlog(blog)
+                    }}>Quick Details</Button>
+                    <br/>
                     <Link href="/blogs/[id]" as={`/blogs/${blog._id}`}>
                       <a>
                         <Button variant="info" block>Details</Button>
@@ -108,17 +141,27 @@ const BlogsPage = (props: any) => {
                 </div>
               </div>
             ))}
-        </div>
-        <br/>
+        </Row>
+        
         <Row>
           <Button variant="dark" block onClick={async (e) => {
             await props.deleteAllBlogs()
           }}>Delete All</Button>
         </Row>
+
+        { show ? (
+          <Row>
+            <Col>
+              {showDetailsBlog(show, blog)}
+            </Col>
+          </Row>
+        ) : <></> }
+        
       </div>
     </>
   );
 };
+
 
 const mapDispatchToProps = (dispatch: any) => {
   return {

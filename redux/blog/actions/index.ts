@@ -111,7 +111,8 @@ export const addBlog = (blog: BlogCreateDto) => async (dispatch: any) => {
       update: (store, { data: { createBlog } }) => {
         // Refresh data in graphql.
         const data: any = store.readQuery({ query: GET_ALL_BLOGS });
-        data.blogs.push(createBlog);
+        // data.blogs.push(createBlog);
+        data.blogs.unshift(createBlog);
         store.writeQuery({ query: GET_ALL_BLOGS, data });
         // Refresh data in redux.
         dispatch({
