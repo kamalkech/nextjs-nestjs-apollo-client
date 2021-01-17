@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
+import blogs from ".";
 import { fetchBlog, fetchBlogs } from "../../redux/blog/actions";
 
 interface IBlog {
@@ -9,6 +10,7 @@ interface IBlog {
   content: string;
   tags: [string];
 }
+
 interface IProps {
   blog: IBlog,
   loading: boolean
@@ -29,8 +31,8 @@ const DetailPage = (props: any) => {
         {props.blog &&
           <div>
             <h2>{props.blog.title}</h2>
-            <br/>
-            <p>{props.blog._id}</p>
+            <div>{props.blog.content}</div>
+            <p>Category: {props.blog.category.title}</p>
           </div>
         }
         <Link href="/blogs" as={`/blogs`}>

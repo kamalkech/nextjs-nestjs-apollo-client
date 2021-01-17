@@ -42,18 +42,18 @@ const apolloClient = new ApolloClient({
     });
   },
   uri: BASE_URL,
-  // cache: cache,
-  resolvers: {
-    Blog: {
-      daysOfExperience({ startDate, endDate }, args, { cache }) {
-        let now = moment().unix();
-        if (endDate) {
-          now = endDate / 1000;
-        }
-        return moment.unix(now).diff(moment.unix(startDate / 1000), 'days');
-      },
-    },
-  },
+  cache: cache,
+  // resolvers: {
+  //   Blog: {
+  //     daysOfExperience({ startDate, endDate }, args, { cache }) {
+  //       let now = moment().unix();
+  //       if (endDate) {
+  //         now = endDate / 1000;
+  //       }
+  //       return moment.unix(now).diff(moment.unix(startDate / 1000), 'days');
+  //     },
+  //   },
+  // },
 });
 
 export default apolloClient;

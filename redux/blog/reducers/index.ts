@@ -2,13 +2,16 @@ import {
   FETCH_BLOGS,
   FETCH_BLOG,
   FIND_BLOG,
+  DELETE_BLOG,
   SET_LOADING,
   LOGS_ERROR,
+  FETCH_CATEGORIES_BLOGS,
 } from '../actions/index';
 
 const initialState = {
   blogs: [],
   blog: null,
+  categoriesBlogs: [],
   loading: false,
   error: null,
 };
@@ -22,7 +25,6 @@ const blogReducer = (state = initialState, action: any) => {
         blogs: action.payload,
         loading: false,
       };
-      console.log('data', data);
       return data;
     case FETCH_BLOG:
       return {
@@ -36,6 +38,19 @@ const blogReducer = (state = initialState, action: any) => {
       return {
         ...state,
         blog: blog[0],
+      };
+    case DELETE_BLOG:
+      const listBlogs = state.blogs;
+      const newListBlogs = listBlogs.filter((p: any) => p.id != action.payload);
+      return {
+        ...state,
+        blogs: newListBlogs,
+      };
+    case FETCH_CATEGORIES_BLOGS:
+      return {
+        ...state,
+        categoriesBlogs: action.payload,
+        loading: false,
       };
     case SET_LOADING:
       return {

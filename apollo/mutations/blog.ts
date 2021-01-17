@@ -16,6 +16,9 @@ export const MUTATION_CREATE_BLOG = gql`
       }
     ) {
       _id
+      category {
+        _id
+      }
       title
       content
       tags
@@ -27,6 +30,16 @@ export const MUTATION_DELETE_BLOG_BY_ID = gql`
   mutation deleteBlogByID($id: String!) {
     deleteBlogByID(id: $id) {
       _id
+      n
+      deletedCount
+      ok
+    }
+  }
+`;
+
+export const MUTATION_DELETE_ALL_BLOG = gql`
+  mutation deleteAllBlogs {
+    deleteAllBlogs {
       n
       deletedCount
       ok

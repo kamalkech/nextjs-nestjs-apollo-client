@@ -5,7 +5,6 @@ import { fetchBlog, fetchBlogs } from "../redux/blog/actions";
 
 
 const DetailPage = (props: any) => {
-  console.log('props', props)
   return (
     <>
       <div className="container fluid mt-2 mb-4">
@@ -43,9 +42,9 @@ const mapStateToProps = (state: any) => ({
 
 DetailPage.getInitialProps = async (props: any) => {
   const state = props.store.getState();
-  console.log('state', state)
+  console.log('props.query.id', props.query.id)
   if (!state.blog.blog) {
-    await props.store.dispatch(await fetchBlog("6000b3ce5639006c38ed1534"));
+    await props.store.dispatch(await fetchBlog(props.query.id));
   }
   return {};
 };
