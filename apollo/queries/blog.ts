@@ -16,7 +16,7 @@ export const GET_ALL_BLOGS = gql`
 `;
 
 export const GET_BLOG_BY_ID = gql`
-  query getBlogByID($id: String!) {
+  query getBlogByID($id: ID!) {
     blog: getBlogByID(id: $id) {
       _id
       category {

@@ -2,6 +2,7 @@ import { useQuery } from '@apollo/react-hooks';
 import gql from 'graphql-tag';
 import {
   MUTATION_CREATE_BLOG,
+  MUTATION_UPDATE_BLOG,
   MUTATION_DELETE_ALL_BLOG,
   MUTATION_DELETE_BLOG_BY_ID,
 } from '../../../apollo/mutations/blog';
@@ -21,6 +22,7 @@ export class BlogCreateDto {
 }
 
 export class BlogUpdateDto {
+  _id: string;
   category: string;
   title: string;
   content: string;
@@ -31,6 +33,7 @@ export class BlogUpdateDto {
 export const FETCH_BLOGS = 'FETCH_BLOGS';
 export const FETCH_BLOG = 'FETCH_BLOG';
 export const FIND_BLOG = 'FIND_BLOG';
+export const UPDATE_BLOG = 'UPDATE_BLOG';
 export const DELETE_BLOG = 'DELETE_BLOG';
 export const DELETE_ALL_BLOGS = 'DELETE_ALL_BLOGS';
 export const FETCH_CATEGORIES_BLOGS = 'FETCH_CATEGORIES_BLOGS';
@@ -64,7 +67,7 @@ export const fetchBlogs = () => async (dispatch: any) => {
     });
 };
 
-export const fetchBlog = (id: any) => async (dispatch: any) => {
+export const fetchBlog = (id: string) => async (dispatch: any) => {
   dispatch({
     type: SET_LOADING,
     payload: true,
@@ -131,13 +134,52 @@ export const addBlog = (blog: BlogCreateDto) => async (dispatch: any) => {
     .finally(() => {});
 };
 
-export const deleteBlog = (id: String) => async (dispatch: any) => {
+export const updateBlog = (blog: BlogUpdateDto) => async (dispatch: any) => {
   dispatch({
     type: SET_LOADING,
     payload: true,
   });
 
   apolloClient
+    .mutate({
+      mutation: MUTATION_UPDATE_BLOG,
+      variables: {
+        _id: blog._id,
+        category: blog.category,
+        title: blog.title,
+        content: blog.content,
+        tags: blog.tags,
+      },
+      update: (store, { data: { updateBlog } }) => {
+        const data: any = store.readQuery({
+          query: GET_BLOG_BY_ID,
+          variables: { id: updateBlog._id },
+        });
+
+        // Refresh data in redux.
+        dispatch({
+          type: FETCH_BLOG,
+          payload: data.blog,
+        });
+      },
+    })
+    .then(async (result) => {
+      dispatch({
+        type: SET_LOADING,
+        payload: true,
+      });
+    })
+    .catch((error) => {})
+    .finally(() => {});
+};
+
+export const deleteBlog = (id: String) => async (dispatch: any) => {
+  dispatch({
+    type: SET_LOADING,
+    payload: true,
+  });
+
+  await apolloClient
     .mutate({
       mutation: MUTATION_DELETE_BLOG_BY_ID,
       variables: { id },
@@ -202,7 +244,7 @@ export const fetchCategoriesBlogs = () => async (dispatch: any) => {
     payload: true,
   });
 
-  apolloClient
+  await apolloClient
     .query({
       query: GET_ALL_CATEGORIES_BLOGS,
     })

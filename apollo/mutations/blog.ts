@@ -18,6 +18,35 @@ export const MUTATION_CREATE_BLOG = gql`
       _id
       category {
         _id
+        title
+      }
+      title
+      content
+      tags
+    }
+  }
+`;
+
+export const MUTATION_UPDATE_BLOG = gql`
+  mutation updateBlog(
+    $_id: String!
+    $category: String!
+    $title: String!
+    $content: String!
+    $tags: [String!]!
+  ) {
+    updateBlog(
+      input: {
+        _id: $_id
+        category: $category
+        title: $title
+        content: $content
+        tags: $tags
+      }
+    ) {
+      _id
+      category {
+        _id
       }
       title
       content

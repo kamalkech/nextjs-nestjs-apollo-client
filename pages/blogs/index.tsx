@@ -9,9 +9,10 @@ import { bindActionCreators } from "redux";
 import { addBlog, deleteAllBlogs, deleteBlog, fetchBlogs, fetchCategoriesBlogs } from "../../redux/blog/actions";
 
 // Bootstrap.
-import Form from 'react-bootstrap/Form';
+import Container from 'react-bootstrap/Container';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
+import Form from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/Button';
 import Modal from 'react-bootstrap/Modal';
 import { useEffect, useState } from "react";
@@ -30,10 +31,11 @@ const BlogsPage = (props: any) => {
     async function fetchAllBlogs() {
       await props.fetchBlogs();
     }
+    fetchAllBlogs();
+
     async function fetchAllCategoriesBlogs() {
       await props.fetchCategoriesBlogs();
     }
-    fetchAllBlogs();
     fetchAllCategoriesBlogs();
   }, []);
 
@@ -69,22 +71,18 @@ const BlogsPage = (props: any) => {
 
   return (
     <>
-      <div className="container fluid">
+      <Container>
         <Row>
-          <div className="col-md-12 text-center">
+          <Col>
             <h1>Nextjs + Nestjs + Graphql + Redux + Mongodb</h1>
             <h2>List Blogs</h2>
-          </div>
-          <Button variant="primary" type="submit" onClick={async (e) => {
-            e.stopPropagation();
-            await props.fetchBlogs();
-          }}>
-              refresh
-            </Button>
+          </Col>
         </Row>
+
         <hr/>
+
         <Row>
-          <div className="col-md-12">
+          <Col>
             <Form  onSubmit={handleSubmit(onSubmit)}>
               <Form.Group controlId="category">
                 <Form.Label>Category</Form.Label>
@@ -97,23 +95,25 @@ const BlogsPage = (props: any) => {
               </Form.Group>
               <Form.Group controlId="title">
                 <Form.Label>Title</Form.Label>
-                <Form.Control type="text" name="title" placeholder="Enter title" ref={register} defaultValue="test title blog" />
+                <Form.Control type="text" name="title" placeholder="Enter title" ref={register} />
               </Form.Group>
               <Form.Group controlId="content">
                 <Form.Label>Content</Form.Label>
-                <Form.Control type="text" name="content" placeholder="Enter content" ref={register} defaultValue="test content blog" />
+                <Form.Control type="text" name="content" placeholder="Enter content" ref={register} />
               </Form.Group>
               <Form.Group controlId="tags">
                 <Form.Label>Tags</Form.Label>
-                <Form.Control type="text" name="tags" placeholder="Enter tags" ref={register} defaultValue="sport,fifa" />
+                <Form.Control type="text" name="tags" placeholder="Enter tags" ref={register} />
               </Form.Group>
               <Button variant="primary" type="submit">
                 Add
               </Button>
             </Form>
-          </div>
+          </Col>
         </Row>
+
         <hr/>
+
         <Row>
           {props.blogs &&
             props.blogs.map((blog: any, idx: number) => (
@@ -123,7 +123,7 @@ const BlogsPage = (props: any) => {
                     <h5 className="card-title text-truncate">
                       {blog.title}
                     </h5>
-                    <p>{blog._id}</p>
+                    <p>{ blog.category.title }</p>
                     <Button variant="warning" block onClick={(e) => {
                       handleShow();
                       setBlog(blog)
@@ -143,6 +143,8 @@ const BlogsPage = (props: any) => {
             ))}
         </Row>
         
+        <hr/>
+
         <Row>
           <Button variant="dark" block onClick={async (e) => {
             await props.deleteAllBlogs()
@@ -157,7 +159,7 @@ const BlogsPage = (props: any) => {
           </Row>
         ) : <></> }
         
-      </div>
+      </Container>
     </>
   );
 };
@@ -180,11 +182,10 @@ const mapStateToProps = (state: any) => ({
   loading: state.blog.loading,
 });
 
-// BlogsPage.getInitialProps = async (props: any) => {
-//   const state = props.store.getState();
-//   // props.store.dispatch(await fetchBlogs());
-//   // props.store.dispatch(await fetchCategoriesBlogs());
-//   return {};
-// };
+BlogsPage.getInitialProps = async (props: any) => {
+  props.store.dispatch(await fetchBlogs());
+  props.store.dispatch(await fetchCategoriesBlogs());
+  return {};
+};
 
 export default connect(mapStateToProps, mapDispatchToProps)(BlogsPage);
