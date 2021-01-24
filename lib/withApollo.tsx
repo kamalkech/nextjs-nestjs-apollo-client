@@ -5,7 +5,7 @@ import ApolloClient, { InMemoryCache } from 'apollo-boost';
 import { ApolloProvider } from '@apollo/react-hooks';
 import moment from 'moment';
 
-const BASE_URL = 'https://nestjsgraphql.herokuapp.com';
+const BASE_URL = 'https://nestjsgraphql.herokuapp.com/graphql';
 
 export default withApollo(
   ({ initialState, headers }) => {
