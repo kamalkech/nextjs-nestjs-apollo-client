@@ -6,7 +6,6 @@
     "dev": "next dev -p 8080",
     "build": "next build",
     "start": "next start -p $PORT",
-    "heroku-postbuild": "npm run build"
   },
   "dependencies": {
     "@apollo/react-hooks": "^4.0.0",
